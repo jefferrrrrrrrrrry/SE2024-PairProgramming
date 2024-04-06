@@ -87,6 +87,14 @@ int mancalaResult(int flag,int seq[],int size){
 
 }
 int * mancalaBoard(int flag,int seq[],int size){
+    int a[3]={13,14,22};
+    for(int i=1;i<3;i++){
+        for(int j=1;j<7;j++){
+            hole[i][j]=4;
+        }
+    }
+    hole[1][7]=0;
+    hole[2][7]=0;
     static int ans[15]={0};
     mancalaResult(seq[0]/10,seq,size-1);//前n-1步
     if(player_now==flag&&flag==seq[size-1]/10&&!isGameOver()&&hole[seq[size-1]/10][seq[size-1]%10]!=0){
@@ -131,15 +139,8 @@ int * mancalaBoard(int flag,int seq[],int size){
 }
 int main(){
     
-    int a[40]={13,16,26,12,16,11,22,25,13,16,15,21,16,14,25,22,16,15,24,16,14,23,15,21,16,14,24,12,26,13,16,15,16,14,16,15,25,16,11,11};
-    for(int i=1;i<3;i++){
-        for(int j=1;j<7;j++){
-            hole[i][j]=4;
-        }
-    }
-    hole[1][7]=0;
-    hole[2][7]=0;
-    int *b=mancalaBoard(1,a,40);
+    
+    int *b=mancalaBoard(2,a,3);
     for(int i=0;i<15;i++){
         printf("%d,",b[i]);
     }

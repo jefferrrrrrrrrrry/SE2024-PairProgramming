@@ -86,7 +86,7 @@ struct Node {
 }
 
 fn dfs(root: &mut Node, step: i32) -> i32 {
-    if is_game_over() != 0 || step == 9 {
+    if is_game_over() != 0 || step == 8 {
         unsafe {
             if is_game_over() != 0 {
                 fetch();
@@ -165,8 +165,11 @@ pub fn mancala_operator(flag: i32, status: &[i32]) -> i32 {
     let mut max_value = -1;
     max_value = dfs(&mut root, 0);
     for i in 1..7 {
-        if max_value == root.child[i].as_ref().unwrap().value {
-            return i as i32;
+        if let Some(child) = &root.child[i] {
+            // 使用 if let 检查 Option 是否为 Some，并获取指向 Child 结构体的引用
+            if max_value == child.value {
+                return flag * 10 + i as i32;
+            }
         }
     }
     
@@ -181,7 +184,9 @@ mod tests {
 
     #[test]
     fn my_test1() {
-        assert_eq!(mancala_operator(1, &[4,4,4,4,0,4,0,4,4,4,4,0,4,8]),3);
+        assert_eq!(mancala_operator(1, &[4, 4, 0, 0, 6, 6,
+2, 5, 5, 4, 4, 4,
+            4, 0]),3);
     }
 
 }

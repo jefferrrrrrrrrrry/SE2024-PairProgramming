@@ -8,15 +8,16 @@
 
 ###### **→ 📖 Q1.1(P) 请记录下目前的时间。**
 
-
+2024.3.29 19：00
 
 ###### **→ 📖 Q1.2(P) 根据之前学习的专业课和各类开发经验，回答：为什么原生应用相较 Web app 更有快的印象？这样的“速度”又是如何达成的？**
 
-
+- 我们认为，原生应用是面向需求开发的，对于Web App更加“定制化”，可以充分利用设备的硬件资源，更改底层实现代码，比如使用静态编译或即时编译、本地存储等来实现运行速度的提升。
+- 经调研，原生应用通过充分利用设备硬件资源、静态编译、本地存储以及定制化的 UI/UX 设计等技术手段，实现了更高效的性能和更快速的用户体验。
 
 ###### **→ 📖 Q1.3(P) “要让 Web 生态、或者说一种雄心勃勃的软件运行环境的未来，受益于既有的‘原生’软件开发模式、技术栈和工具链，我们还缺少什么？”——你们的答案是？**
 
-
+实现一种编码，使得既有的‘原生’软件开发模式、技术栈和工具链生产的代码，通过统一的编码，运行在Web 生态之上，并且保持运行在原生应用之上的性能。
 
 #### 结对过程
 
@@ -30,7 +31,7 @@
 
 > IV. 听说过，且使用 Wasm 实际进行过开发（即便是玩具项目的开发）。
 
-
+I. 没有听说过；
 
 ###### **→ 📖 Q1.5(P) 请在完成任务的同时记录，并在完成任务后整理完善：**
 
@@ -40,39 +41,106 @@
 >2. 如何进行了开发；
 > 3. 遇到了什么问题，又通过什么方式解决。
 
-
+1. - 查阅了如何将C/C++模块编译为WebAssembly的官方文档https://developer.mozilla.org/en-US/docs
+   - 查阅了[知乎](https://zhuanlan.zhihu.com/p/655814356)，[stackoverflow](https://stackoverflow.com/questions/68266094/calling-and-wrapping-c-function-in-nodejs-emscripten)中关于如何编译的实例
+   - 如何配置rust语言环境，[rust官方文档](https://www.rust-lang.org/)
+2. - 两人分析题目
+   - 一人负责编码，另一人负责梳理思路和质疑
+   - 从C语言开始编码，在编译失败后尝试将C语言翻译为rust
+3. - rust内有多个测试点的情况会并发执行，有概率出现结果不一致的情况	如何解决：先查阅资料发现了这一事实，然后每次只执行一个测试点
+   - C语言转rust时有很大区别，比如全局变量静态数组，我们查阅了相关资料，使用unsafe块包裹所有对全局变量的修改
 
 #### 编程语言选择
-
-**以下问题根据你选择的编程语言回答：例如，如果你选择 AssemblyScript，你只需要回答标记为 Q1.6.A.x 的问题。**
-
-##### AssemblyScript
-
-###### **→ 📖 Q1.6.A.1(P) AssemblyScript 与 JavaScript/TypeScript 有什么不同？**
-
-
-
-###### **→ 📖 Q1.6.A.2(P) 执行 `npm run asbuild` 后，发生了什么？**
-
-
 
 ##### Rust
 
 ###### **→ 📖 Q1.6.R.1(P) 浏览 `Cargo.toml`，请问第 9 行的设置项中： `crate-type="cdylib"` 的作用是？可以从提供的参考文档当中寻找答案。**
 
-
+这个设置使得编译器在构建 Rust 项目时，会生成一个动态链接库文件，而不是一个可执行文件或者静态库，允许代码在运行时动态加载。
 
 ###### **→ 📖 Q1.6.R.2(P) 浏览 `lib.rs`，请问第 3 行的属性（Attribute）注解`#[wasm_bindgen]` 的作用是？请尝试删除掉这一注解重新运行上面这条 `wasm-pack` 的编译和打包指令，检查删除前后 `/pkg` 内生成的文件发生的变化；并请参考提供的参考文档完善答案。**
 
+`#[wasm_bindgen]` 是一个属性（attribute），用于标记 Rust 函数和类型，指示编译器生成与 JavaScript 可以相互调用的 WebAssembly 绑定。它来自于 `wasm-bindgen` crate，是 Rust 与 WebAssembly 交互的关键部分。
 
+具体而言，使用 `#[wasm_bindgen]` 标记的 Rust 函数和类型将被 `wasm-bindgen` 工具处理，该工具将它们转换为 JavaScript 可以调用的函数和对象。这使得 Rust 代码可以直接在 WebAssembly 中运行，并与 JavaScript 代码进行交互。
 
-##### 自选的编程语言
+删之后：
 
-###### **→ 📖 Q1.6.X.1(P) 选择该编程语言的原因是？**
+```javascript
+//t1_rust.js:
+let imports = {};
+let wasm;
 
+const path = require('path').join(__dirname, 't1_rust_bg.wasm');
+const bytes = require('fs').readFileSync(path);
 
+const wasmModule = new WebAssembly.Module(bytes);
+const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+wasm = wasmInstance.exports;
+module.exports.__wasm = wasm;
+//t1_rust.d.ts:
+/* tslint:disable */
+/* eslint-disable */
 
-###### **→ 📖 Q1.6.X.2(P) 为了完成相关编程任务，进行了哪些操作、使用了怎样的工具链？简要描述相关工具做了什么。**
+```
+
+删之前：
+
+```js
+//t1_rust.js:
+let imports = {};
+let wasm;
+
+let cachedUint32Memory0 = null;
+
+function getUint32Memory0() {
+    if (cachedUint32Memory0 === null || cachedUint32Memory0.byteLength === 0) {
+        cachedUint32Memory0 = new Uint32Array(wasm.memory.buffer);
+    }
+    return cachedUint32Memory0;
+}
+
+let WASM_VECTOR_LEN = 0;
+
+function passArray32ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 4, 4) >>> 0;
+    getUint32Memory0().set(arg, ptr / 4);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+/**
+* @param {number} flag
+* @param {Int32Array} seq
+* @param {number} size
+* @returns {number}
+*/
+module.exports.bocchi_shut_up = function(flag, seq, size) {
+    const ptr0 = passArray32ToWasm0(seq, wasm.__wbindgen_malloc);
+    const len0 = WASM_VECTOR_LEN;
+    const ret = wasm.bocchi_shut_up(flag, ptr0, len0, size);
+    return ret;
+};
+
+const path = require('path').join(__dirname, 't1_rust_bg.wasm');
+const bytes = require('fs').readFileSync(path);
+
+const wasmModule = new WebAssembly.Module(bytes);
+const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+wasm = wasmInstance.exports;
+module.exports.__wasm = wasm;
+
+//t1_rust.d.ts:
+/* tslint:disable */
+/* eslint-disable */
+/**
+* @param {number} flag
+* @param {Int32Array} seq
+* @param {number} size
+* @returns {number}
+*/
+export function bocchi_shut_up(flag: number, seq: Int32Array, size: number): number;
+
+```
 
 
 
@@ -80,7 +148,7 @@
 
 ###### **→ 📖 Q1.7(P) 请记录下目前的时间。**
 
-
+2024.3.29 19：34
 
 ###### **→ 📖 Q1.8(I) 请写下本部分的心得体会。**
 
@@ -92,30 +160,56 @@
 
 ###### **→ 📖 Q2.1(P) 请记录下目前的时间。**
 
-
+2024.3.20 9:30
 
 ###### **→ 📖 Q2.2(P) 请在完成任务的同时记录，并在完成任务后整理完善：**
 
 > 1. 浏览任务要求，参照 **附录A：基于 PSP 2.1 修改的 PSP 表格**，估计任务预计耗时；
 >2. 完成编程任务期间，依次做了什么（比如查阅了什么资料，随后如何进行了开发，遇到了什么问题，又通过什么方式解决）；
 
+1.
 
+| Personal Software Process Stages        | 个人软件开发流程                                             | 预估耗时（分钟） | 实际耗时（分钟） |
+| :-------------------------------------- | :----------------------------------------------------------- | :--------------- | :--------------- |
+| **PLANNING**                            | **计划**                                                     |                  |                  |
+| - Estimate                              | - 估计这个任务需要多少时间                                   | 120              | 110              |
+| **DEVELOPMENT**                         | **开发**                                                     |                  |                  |
+| - Analysis & Design Spec                | - 需求分析 & 生成设计规格（确定要实现什么）                  | 20               | 15               |
+| - Technical Background                  | - 了解技术背景（包括学习新技术）                             | 5                | 5                |
+| - Coding Standard                       | - 代码规范                                                   | 5                | 5                |
+| - Design                                | - 具体设计（确定怎么实现）                                   | 20               | 20               |
+| - Coding                                | - 具体编码                                                   | 40               | 40               |
+| - Code Review                           | - 代码复审                                                   | 10               | 10               |
+| - Test Design                           | - 测试设计（确定怎么测，比如要测试哪些情景、设计哪些种类的测试用例） | 10               | 5                |
+| - Test Implement                        | - 测试实现（设计/生成具体的测试用例、编码实现测试）          | 10               | 10               |
+| **REPORTING**                           | **报告**                                                     |                  |                  |
+| - Quality Report                        | - 质量报告（评估设计、实现、测试的有效性）                   | 15               | 15               |
+| - Size Measurement                      | - 计算工作量                                                 | 5                | 2                |
+| - Postmortem & Process Improvement Plan | - 事后总结和过程改进计划（总结过程中的问题和改进点）         | 15               | 15               |
+| **TOTAL**                               | **合计**                                                     | 155              | 142              |
+
+2.首先进行题意分析，然后设计封装播种动作、判定游戏结束、结束清算为单独的函数，随后进行了coding，我们先用c语言实现，然后逐句转化为rust。c的编码过程中没有发生问题，转为rust过程中，原本在c中使用的全局变量在rust中需要unsafe块包裹。测试环节，测试样例是并发执行的，我们使用了全局变量，导致多次测试结果不一致，之后查阅资料发现了这个问题，将测试样例逐个测试，就解决了。
 
 #### 测试
 
 ###### **→ 📖 Q2.3(P) 请说明针对该任务，你们设计和实现测试的方法及过程，包括但不限于：出于对需求的哪些考虑设计了哪些测试用例、如何评估所设计测试的有效性 等等。**
 
+我们分析了需求，决定对规则逐条编写测试样例。
 
+![image-20240406093839956](C:\Users\GZC\AppData\Roaming\Typora\typora-user-images\image-20240406093839956.png)
+
+我们使用了混合测试，检验其他简易测试点的有效性，混合测试来自于B站真实游戏模拟视频，游戏结束测试来自T3的模拟对弈序列。
 
 ###### **→ 📖 Q2.4(I) 请说明<u>单元测试</u>对软件开发的作用。**
 
-
+1. **发现问题：** 单元测试可以帮助开发人员在代码编写阶段及时发现问题和错误。通过针对每个单元（一个或多个函数）编写测试用例，可以验证代码的正确性。提前发现 bug，从而减少在后续阶段（集成测试、系统测试等）发现和修复问题所需的时间和成本。
+2. **提高代码质量：** 单元测试要求开发人员编写可测试性强、模块化的代码。通过编写测试用例，开发人员会更加注意编写可读、简洁、可维护的代码，从而提高代码的质量。
 
 #### 总结
 
 ###### **→ 📖 Q2.5(P) 请记录下目前的时间，并根据实际情况填写 附录A：基于 PSP 2.1 修改的 PSP 表格 的“实际耗时”栏目。**
 
-
+2024.3.20 11:30
 
 ###### **→ 📖 Q2.6(I) 请写下本部分的心得体会。**
 
@@ -134,7 +228,26 @@
 > 1. 浏览任务要求，参照 **附录A：基于 PSP 2.1 修改的 PSP 表格**，估计任务预计耗时；
 >2. 完成编程任务期间，依次做了什么（比如查阅了什么资料，随后如何进行了开发，遇到了什么问题，又通过什么方式解决）；
 
+### 
 
+| Personal Software Process Stages        | 个人软件开发流程                                             | 预估耗时（分钟） | 实际耗时（分钟） |
+| :-------------------------------------- | :----------------------------------------------------------- | :--------------- | :--------------- |
+| **PLANNING**                            | **计划**                                                     |                  |                  |
+| - Estimate                              | - 估计这个任务需要多少时间                                   |                  |                  |
+| **DEVELOPMENT**                         | **开发**                                                     |                  |                  |
+| - Analysis & Design Spec                | - 需求分析 & 生成设计规格（确定要实现什么）                  |                  |                  |
+| - Technical Background                  | - 了解技术背景（包括学习新技术）                             |                  |                  |
+| - Coding Standard                       | - 代码规范                                                   |                  |                  |
+| - Design                                | - 具体设计（确定怎么实现）                                   |                  |                  |
+| - Coding                                | - 具体编码                                                   |                  |                  |
+| - Code Review                           | - 代码复审                                                   |                  |                  |
+| - Test Design                           | - 测试设计（确定怎么测，比如要测试哪些情景、设计哪些种类的测试用例） |                  |                  |
+| - Test Implement                        | - 测试实现（设计/生成具体的测试用例、编码实现测试）          |                  |                  |
+| **REPORTING**                           | **报告**                                                     |                  |                  |
+| - Quality Report                        | - 质量报告（评估设计、实现、测试的有效性）                   |                  |                  |
+| - Size Measurement                      | - 计算工作量                                                 |                  |                  |
+| - Postmortem & Process Improvement Plan | - 事后总结和过程改进计划（总结过程中的问题和改进点）         |                  |                  |
+| **TOTAL**                               | **合计**                                                     |                  |                  |
 
 #### 代码可复用性与需求变更
 

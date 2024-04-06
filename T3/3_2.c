@@ -79,7 +79,7 @@ struct node{
 };
 
 int dfs(struct node *root,int step){//返回当前节点的最大净胜棋子数
-    if(isGameOver()||step==9){
+    if(isGameOver()||step==3){
         if(isGameOver())fetch();
         root->value=hole[me][7]-hole[me % 2 + 1][7];
         return hole[me][7]-hole[me % 2 + 1][7];
@@ -123,15 +123,6 @@ int dfs(struct node *root,int step){//返回当前节点的最大净胜棋子数
     root->value=max_value;
     return root->value;
 }
-// void dfs_print(struct node * a){
-//     if(a==NULL){
-//         return ;
-//     }
-//     printf("%d\n",a->value);
-//     for(int i=1;i<7;i++){
-//         dfs_print(a->child[i]);
-//     }
-// }
 int mancalaOperator(int flag,int status[]){
     struct node root;
     int cnt=0;
@@ -145,13 +136,14 @@ int mancalaOperator(int flag,int status[]){
     root.id=-1;
     int max_value=-1;
     max_value=dfs(&root,0);
+    printf("%d\n",max_value);
     for(int i=1;i<7;i++){
-        if(max_value==root.child[i]->value)return i;
+        if(root.child[i]!=NULL&&max_value==root.child[i]->value)return i;
     }
     return -1;
 }
 int main(){
-    int a[14]={4,4,4,4,0,4,0,4,4,4,4,0,4,8};
+    int a[14]={4, 4, 0, 5, 5, 5,1, 4, 4, 4, 4, 4,4, 0};
     
     clock_t start, end;
     double cpu_time_used;

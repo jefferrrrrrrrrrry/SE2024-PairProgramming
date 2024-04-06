@@ -1,8 +1,8 @@
 #include <stdio.h>
-int hole[3][8];
+ int hole[3][8];
 //7 6 5 4 3 2 1 7 
 //7 1 2 3 4 5 6 7
-int scatter(int player,int start){
+ int scatter(int player,int start){
     int tmp_player=player;
     int cnt=hole[player][start];//棋子数
     hole[player][start]=0;
@@ -21,8 +21,7 @@ int scatter(int player,int start){
                hole[tmp_player][loc]==0&&
                hole[tmp_player%2+1][7-loc]!=0){
                 hole[player][7]+=(hole[tmp_player%2+1][7-loc]+1);
-                hole[tmp_player%2+1][7-loc]=0;
-                                                                                                            
+                hole[tmp_player%2+1][7-loc]=0;                          
             }else{
                 hole[tmp_player][loc]+=1;
                 
@@ -35,7 +34,7 @@ int scatter(int player,int start){
     }
     return 0;
 }
-int isGameOver(){
+ int isGameOver(){
     for(int i=1;i<3;i++){
         int cnt=0;
         for(int j=1;j<7;j++){
@@ -45,7 +44,7 @@ int isGameOver(){
     }
     return 0;
 }
-void fetch(){
+ void fetch(){
     int cnt1=0,cnt2=0;
     for(int j=1;j<7;j++){
         cnt1+=hole[1][j];
@@ -65,11 +64,19 @@ void fetch(){
         }
     }
 }
-int mancalaResult(int flag,int seq[],int size){
-    
+ int  mancalaResult(int flag,int* seq,int size){
+    // int seq[100]={0};
+	// for (int i = 0; i < size; i++){
+	// 	memcpy(&seq[i], ptr + i * 4, 4);
+	// }
+    for(int i=1;i<7;i++){
+        hole[1][i]=4;
+        hole[2][i]=4;
+    }
     int player=flag;
     for(int i=0;i<size;i++){
         int item=seq[i];
+    
         if(player!=(item/10)||isGameOver()||hole[player][item%10]==0){
             //printf("error:\nplayer:%d\ngameover:%d,null:%d\n",player,isGameOver(),hole[player][item%10]);
             return 30000+i;
@@ -90,7 +97,7 @@ int main(){
     
     int a[40]={13,16,26,12,16,11,22,25,13,16,15,21,16,14,25,22,16,15,24,16,14,23,15,21,16,14,24,12,26,13,16,15,16,14,16,15,25,16,11,26};
     for(int l=1;l<=40;l++){
-        //printf("--------------------------%d---%d--------------------------------\n",l,a[l]);
+        printf("--------------------------%d---%d--------------------------------\n",l,a[l-1]);
         for(int i=1;i<3;i++){
             for(int j=1;j<7;j++){
                 hole[i][j]=4;

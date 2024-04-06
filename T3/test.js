@@ -1,18 +1,18 @@
 import assert from "assert";
 
 // Choose proper "import" depending on your PL.
-import { mancalaOperator as op1 } from "./t3-2-as/build/release.js";
-// import { mancala_operator as op1 } from "./t3_2_rust/pkg/t3_2_rust.js"
+//import { mancalaOperator as op1 } from "./t3-2-as/build/release.js";
+ import { mancala_operator as op1 } from "./t3_2_rust/pkg/t3_2_rust.js"
 // [Write your own "import" for other PLs.]
 
 // Choose proper "import" depending on your PL.
-import { mancalaOperator as op2 } from "./t3-2-as-rival/build/release.js";
-// import { mancala_operator as op2 } from "./t3_2_rust_rival/pkg/t3_2_rust.js"
+//import { mancalaOperator as op2 } from "./t3-2-as-rival/build/release.js";
+ import { mancala_operator as op2 } from "./t3_3_rust/pkg/t3_3_rust.js"
 // [Write your own "import" for other PLs.]
 
 // Choose proper "import" depending on your PL.
-import { mancalaBoard as board } from "./t3-1-as/build/release.js";
-// import { mancala_board as board } from "./t3_1_rust/pkg/t3_1_rust.js"
+//import { mancalaBoard as board } from "./t3-1-as/build/release.js";
+import { mancala_board as board } from "./t3_1_rust/pkg/t3_1_rust.js"
 // [Write your own "import" for other PLs.]
 
 let operator, status, operation, operationSequence, boardReturn, isEnded;
@@ -25,20 +25,23 @@ status = [4,4,4,4,4,4,0,4,4,4,4,4,4,0];
 operation = 0;
 operationSequence = [];
 isEnded = false;
-
+console.log(status)
 do {
+    
     if (operator == 1) {
         timeStamp = performance.now() * 1000;
         operation = op1(1, status);
         op1Time += performance.now() * 1000 - timeStamp;
         operationSequence.push(operation);
         boardReturn = board(1, operationSequence, operationSequence.length);
+        console.log(operationSequence)
     } else {
         timeStamp = performance.now() * 1000;
         operation = op2(2, status);
         op2Time += performance.now() * 1000 - timeStamp;
         operationSequence.push(operation);
         boardReturn = board(2, operationSequence, operationSequence.length);
+        console.log(operationSequence)
     }
     if (boardReturn[14] == 1) {
         operator = 1;
@@ -50,6 +53,8 @@ do {
         isEnded = true;
         op1Result += boardReturn[14] - 200;
         op2Result -= boardReturn[14] - 200;
+        status = boardReturn.slice(0,14);
+        console.log(status)
     }
 } while (!isEnded);
 
@@ -84,6 +89,8 @@ do {
         isEnded = true;
         op1Result += boardReturn[14] - 200;
         op2Result -= boardReturn[14] - 200;
+        status = boardReturn.slice(0,14);
+        console.log(status)
     }
 } while (!isEnded);
  
