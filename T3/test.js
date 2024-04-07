@@ -2,7 +2,7 @@ import assert from "assert";
 
 // Choose proper "import" depending on your PL.
 //import { mancalaOperator as op1 } from "./t3-2-as/build/release.js";
- import { mancala_operator as op1 } from "./t3_2_rust/pkg/t3_2_rust.js"
+ import { mancalaOperator as op1 } from "./t3_2_c/a.out.js"
 // [Write your own "import" for other PLs.]
 
 // Choose proper "import" depending on your PL.
@@ -12,7 +12,7 @@ import assert from "assert";
 
 // Choose proper "import" depending on your PL.
 //import { mancalaBoard as board } from "./t3-1-as/build/release.js";
-import { mancala_board as board } from "./t3_1_rust/pkg/t3_1_rust.js"
+import { mancalaBoard as board } from "./t3_1_c/a.out.js"
 // [Write your own "import" for other PLs.]
 
 let operator, status, operation, operationSequence, boardReturn, isEnded;
@@ -46,9 +46,11 @@ do {
     if (boardReturn[14] == 1) {
         operator = 1;
         status = boardReturn.slice(0,14);
+        console.log(status)
     } else if (boardReturn[14] == 2) {
         operator = 2;
         status = boardReturn.slice(0,14);
+        console.log(status)
     } else {
         isEnded = true;
         op1Result += boardReturn[14] - 200;
@@ -82,9 +84,11 @@ do {
     if (boardReturn[14] == 1) {
         operator = 1;
         status = boardReturn.slice(0,14);
+        console.log(status)
     } else if (boardReturn[14] == 2) {
         operator = 2;
         status = boardReturn.slice(0,14);
+        console.log(status)
     } else {
         isEnded = true;
         op1Result += boardReturn[14] - 200;

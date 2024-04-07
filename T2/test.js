@@ -2,7 +2,7 @@ import assert from "assert";
 
 // Choose proper "import" depending on your PL.
 // import { mancalaResult } from "./t2-as/build/release.js";
-import { mancala_result as mancalaResult } from "./t2_c.js"
+import {  mancalaResult } from "./t2_c/a.out.js"
 
 // [Write your own "import" for other PLs.]
 // import { readFileSync } from 'fs';

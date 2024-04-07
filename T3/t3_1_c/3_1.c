@@ -1,8 +1,12 @@
 #include <stdio.h>
+#include <emscripten.h>
+EMSCRIPTEN_KEEPALIVE
 int hole[3][8];
+EMSCRIPTEN_KEEPALIVE
 int player_now;
 //7 6 5 4 3 2 1 7 
 //7 1 2 3 4 5 6 7
+EMSCRIPTEN_KEEPALIVE
 int scatter(int player,int start){
     int tmp_player=player;
     int cnt=hole[player][start];//棋子数
@@ -36,6 +40,7 @@ int scatter(int player,int start){
     }
     return 0;
 }
+EMSCRIPTEN_KEEPALIVE
 int isGameOver(){
     for(int i=1;i<3;i++){
         int cnt=0;
@@ -46,6 +51,7 @@ int isGameOver(){
     }
     return 0;
 }
+EMSCRIPTEN_KEEPALIVE
 void fetch(){
     int cnt1=0,cnt2=0;
     for(int j=1;j<7;j++){
@@ -66,6 +72,7 @@ void fetch(){
         }
     }
 }
+EMSCRIPTEN_KEEPALIVE
 int mancalaResult(int flag,int seq[],int size){
     player_now=flag;
     for(int i=0;i<size;i++){
@@ -86,6 +93,7 @@ int mancalaResult(int flag,int seq[],int size){
     }
 
 }
+EMSCRIPTEN_KEEPALIVE
 int * mancalaBoard(int flag,int seq[],int size){
     int a[3]={13,14,22};
     for(int i=1;i<3;i++){
@@ -136,13 +144,13 @@ int * mancalaBoard(int flag,int seq[],int size){
         }
     }
     return ans;
-}
-int main(){
+ }
+// int main(){
     
     
-    int *b=mancalaBoard(2,a,3);
-    for(int i=0;i<15;i++){
-        printf("%d,",b[i]);
-    }
-    return 0;
-}
+//     int *b=mancalaBoard(2,a,3);
+//     for(int i=0;i<15;i++){
+//         printf("%d,",b[i]);
+//     }
+//     return 0;
+// }

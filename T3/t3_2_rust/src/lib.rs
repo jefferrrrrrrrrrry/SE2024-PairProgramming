@@ -97,12 +97,14 @@ fn dfs(root: &mut Node, step: i32) -> i32 {
     }
     let mut max_value = -48;
     let mut flag = root.flag;
-    unsafe {
-        if root.id > 0 {
-            if scatter(root.id / 10, (root.id % 10) as usize) == 0 {
-                flag = flag % 2 + 1;
-            }
+    if root.id > 0 {
+        if scatter(root.id / 10, (root.id % 10) as usize) == 0 {
+            flag = flag % 2 + 1;
         }
+    }
+    
+    unsafe {
+        
         root.child[0] = None;
         for i in 1..LENGTH - 1 {
             if HOLE[flag as usize][i] == 0 {
